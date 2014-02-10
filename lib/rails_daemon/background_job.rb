@@ -88,6 +88,14 @@ module RailsDaemon
 
       self.log_device.puts "#{Time.now.utc}: Done loading rails environment"
 
+      logger = ActiveSupport::TaggedLogging.new(::Logger.new(self.log_device))
+      logger.formatter = RailsDaemon::Logger::Formatter.new
+      logger.formatter.show_time = true
+      Rails.logger.instance_variable_set(:@logger, logger)
+      Rails.logger.instance_variable_set(:@logdev, self.log_device)
+      Rails.logger.level = self.log_level
+      Rails.logger.clear_tags!
+
       at_exit do
         begin
           Rails.logger.tagged("#{Process.pid}") do
