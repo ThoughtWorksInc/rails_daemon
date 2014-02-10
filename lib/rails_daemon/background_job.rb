@@ -88,7 +88,7 @@ module RailsDaemon
 
       self.log_device.puts "#{Time.now.utc}: Done loading rails environment"
 
-      logger = ActiveSupport::TaggedLogging.new(::Logger.new(self.log_device))
+      logger = ::Logger.new(self.log_device)
       logger.formatter = RailsDaemon::Logger::Formatter.new
       logger.formatter.show_time = true
       Rails.logger.instance_variable_set(:@logger, logger)
