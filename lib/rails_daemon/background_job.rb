@@ -18,6 +18,9 @@ module RailsDaemon
           ActiveRecord::Base.transaction do
             yield
           end
+        rescue SystemExit => e
+          ActiveRecord::Base.clear_active_connections!
+          Rails.logger.info("PID #{Process.pid} exiting")
         rescue Exception => e
           ActiveRecord::Base.clear_active_connections!
           Rails.logger.error("There was an unknown error.")
@@ -32,6 +35,9 @@ module RailsDaemon
       prepare!
       begin
         yield
+      rescue SystemExit => e
+        ActiveRecord::Base.clear_active_connections!
+        Rails.logger.info("PID #{Process.pid} exiting")
       rescue Exception => e
         ActiveRecord::Base.clear_active_connections!
         Rails.logger.error("There was an unknown error.")
