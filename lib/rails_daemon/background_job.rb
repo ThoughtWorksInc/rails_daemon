@@ -80,6 +80,7 @@ module RailsDaemon
       self.log_device.puts "#{Time.now.utc}: Loading rails environment"
       begin
         ::Rake::Task[:environment].invoke
+        Rails.application.eager_load!
       rescue => e
         begin
           self.log_device.puts "#{Time.now.utc}: Could not initialize rails environment, bailing out!"
